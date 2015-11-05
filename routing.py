@@ -1,3 +1,5 @@
+#! /bin/python
+
 import sys
 import getopt
 
@@ -9,6 +11,8 @@ class Node:
 		print 'Node: %d - (Neighbor:cost): '
 		for link in links:
 			print "%d:%d" % (link.destID, link.cost)
+	def addLinkToNode(self, link):
+		self.links.append(link)
 
 class Link:
 	def __init__(self, destID=-1, cost=0):
@@ -16,7 +20,7 @@ class Link:
 		self.cost = cost
 
 class Graph:
-	def __init__(nodes):
+	def __init__(self):
 		self.nodes = []
 	def addNode(self, node):
 		self.nodes.append(node)
@@ -25,7 +29,7 @@ class Graph:
 	# if no match, creates new node and appends to graph
 	# returns node(s) matched or created
 	def findNode(self, nodeID):
-		res = filter(lamda x: x.ID == nodeID, self.nodes)
+		res = [x for x in self.nodes if x.ID == nodeID]
 		if not res:
 			temp = Node(nodeID)
 			res = self.addNode(temp)
@@ -36,11 +40,11 @@ class Graph:
 		sourceNode = self.findNode(sourceID)
 		destNode = self.findNode(destID)
 
-		sourceLink = Link(destId, cost) #sourceID to destID
-		sourceNode.links.append(sourceLink)
+		sourceLink = Link(destID, cost) #sourceID to destID
+		sourceNode.addLinkToNode(sourceLink)
 
-		destLink = Link(sourceId, cost) #distID to sourceid
-		destNode.links.append(destLink)
+		destLink = Link(sourceID, cost) #distID to sourceid
+		destNode.addLinkToNode(destLink)
 	def printGraph(self):
 		for node in self.nodes:
 			printNode(node)
@@ -49,17 +53,17 @@ class Graph:
 def parse(filename, filetype, graph):
 	f = open(filename, "r")
 	if(filetype == 'TOPOLOGY_FILE'): # process the links
+		print 'parsing topology file...'
 		#format: <ID of a node> <ID of another node> <cost of link>
-		num_nodes = file_len(filenam)
-		for i in xrange(0, num_nodes):
-			currLine = f.readline()
+		lines = f.readlines()
+		for line in lines:
 			# e.g., currline 1 2 3 to ['1', '2', '3'] to currlink [1,2,3]
-			currLink = map(int, currLine.split())
+			currLink = map(int, line.split())
 			graph.addLink(currLink[0], currLink[1], currLink[2])
 	elif(filetype == 'TOPOLOGY_CHANGES_FILE'):
-
+		print 'parisng topology changes file...'
 	elif(filetype == 'MESSAGE_FILE'):
-	
+		print 'parsing message file...'
 	else:
 		print "Error: Invalid filetype in parse(filename, filetype"
 
@@ -69,3 +73,5 @@ def main():
 	parse('topology.txt', 'TOPOLOGY_FILE', g)
 	g.printGraph()
 
+if __name__ == '__main__':
+	main()
