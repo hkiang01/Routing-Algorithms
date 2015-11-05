@@ -5,6 +5,10 @@ class Node:
 	def __init__(self, ID=-1):
 		self.links = [] # links node is connected to
 		self.ID = ID
+	def printNode(self):
+		print 'Node: %d - (Neighbor:cost): '
+		for link in links:
+			print "%d:%d" % (link.destID, link.cost)
 
 class Link:
 	def __init__(self, destID=-1, cost=0):
@@ -14,13 +18,13 @@ class Link:
 class Graph:
 	def __init__(nodes):
 		self.nodes = []
-	def addNode(node):
+	def addNode(self, node):
 		self.nodes.append(node)
 		return Node
 	# finds nodes in graph matching nodeId.
 	# if no match, creates new node and appends to graph
 	# returns node(s) matched or created
-	def findNode(nodeID):
+	def findNode(self, nodeID):
 		res = filter(lamda x: x.ID == nodeID, self.nodes)
 		if not res:
 			temp = Node(nodeID)
@@ -28,7 +32,7 @@ class Graph:
 		return res
 	# adds links between 2 nodes, which are found or created
 	# comprehensive
-	def addLink(sourceID, destID, cost):
+	def addLink(self, sourceID, destID, cost):
 		sourceNode = self.findNode(sourceID)
 		destNode = self.findNode(destID)
 
@@ -36,7 +40,10 @@ class Graph:
 		sourceNode.links.append(sourceLink)
 
 		destLink = Link(sourceId, cost) #distID to sourceid
-		destNode.links.append(destLink)		
+		destNode.links.append(destLink)
+	def printGraph(self):
+		for node in self.nodes:
+			printNode(node)
 
 # file parsing and topology construction
 def parse(filename, filetype, graph):
@@ -59,4 +66,6 @@ def parse(filename, filetype, graph):
 def main():
 	print "main"
 	g = Graph()
-	
+	parse('topology.txt', 'TOPOLOGY_FILE', g)
+	g.printGraph()
+
