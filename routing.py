@@ -24,13 +24,14 @@ class Graph:
 		self.nodes = []
 	def addNode(self, node):
 		self.nodes.append(node)
-		return Node
+		return node
 	# finds nodes in graph matching nodeId.
 	# if no match, creates new node and appends to graph
 	# returns node(s) matched or created
 	def findNode(self, nodeID):
 		res = [x for x in self.nodes if x.ID == nodeID]
-		if not res:
+		print res
+		if len(res):
 			temp = Node(nodeID)
 			res = self.addNode(temp)
 		return res
