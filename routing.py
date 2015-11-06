@@ -86,6 +86,8 @@ class Graph:
 			return []
 		node = self.findNode(source)
 		path = node.getNextHop(destination)
+		if path[2]<0:
+			return None
 		route = self.route_path(path[1],destination)
 		route.insert(0,source)
 		return route
@@ -99,8 +101,11 @@ class Graph:
 		path = self.route_path(source,destination)
 		#cost = self.route_path(source,destination)
 		result = "from %d to %d hops " % (source,destination)
-		for p in path:
-			result+=str(p)+" "
+		if path==None:
+			result+="unreachable "
+		else:
+			for p in path:
+				result+=str(p)+" "
 		result += "message "+message
 		return result+"\n"
 	def distance_vector(self):

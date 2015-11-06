@@ -53,7 +53,7 @@ class Node:
 		for zelda in self.links:
 			if zelda.destID == destID:
 				link = zelda
-		if cost==-999:
+		if cost<0:
 			self.links.remove(link)
 		else:
 			link.cost = cost
@@ -88,6 +88,8 @@ class Graph:
 			return []
 		node = self.findNode(source)
 		path = node.getNextHop(destination)
+		if path[2]<0:
+			return None
 		route = self.route_path(path[1],destination)
 		route.insert(0,source)
 		return route
@@ -101,8 +103,11 @@ class Graph:
 		path = self.route_path(source,destination)
 		#cost = self.route_path(source,destination)
 		result = "from %d to %d hops " % (source,destination)
-		for p in path:
-			result+=str(p)+" "
+		if path==None:
+			result+="unreachable "
+		else:
+			for p in path:
+				result+=str(p)+" "
 		result += "message "+message
 		return result+"\n"
 	def distance_vector(self):
@@ -120,7 +125,7 @@ class Graph:
 					for nextHop in node.neighbors():
 						proposedBest = self.findNode(nextHop,False).getNextHop(destID)
 						newCost = node.getLinkCost(nextHop) + proposedBest[2]
-						if proposedBest[2]==-999: #if there is no route
+						if proposedBest[2]<0: #if there is no route
 							continue	  #don't use this neighbor
 						if(newCost==currBest[2]): #if we have a tie
 							if currBest[1] > nextHop:#break tie with whichever node has lowest nextHop
@@ -165,7 +170,7 @@ class Graph:
 		sourceNode = self.findNode(sourceID)
 		destNode = self.findNode(destID)
 
-		if cost==-999: #if cost is -999, don't do anything
+		if cost<0: #if cost is -999, don't do anything
 			return
 
 		sourceLink = Link(destID, cost) #sourceID to destID
