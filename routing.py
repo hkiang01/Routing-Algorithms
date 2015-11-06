@@ -8,8 +8,8 @@ class Node:
 		self.links = [] # links node is connected to
 		self.ID = ID
 	def printNode(self):
-		print 'Node: %d - (Neighbor:cost): '
-		for link in links:
+		print 'Node: %d - (Neighbor:cost): ' % (self.ID)
+		for link in self.links:
 			print "%d:%d" % (link.destID, link.cost)
 	def addLinkToNode(self, link):
 		self.links.append(link)
@@ -30,11 +30,12 @@ class Graph:
 	# returns node(s) matched or created
 	def findNode(self, nodeID):
 		res = [x for x in self.nodes if x.ID == nodeID]
-		print res
-		if len(res):
-			temp = Node(nodeID)
-			res = self.addNode(temp)
-		return res
+		for x in self.nodes:
+			if x.ID == nodeID:
+				return x
+		temp = Node(nodeID)
+		self.addNode(temp)
+		return self.findNode(nodeID)
 	# adds links between 2 nodes, which are found or created
 	# comprehensive
 	def addLink(self, sourceID, destID, cost):
@@ -48,7 +49,7 @@ class Graph:
 		destNode.addLinkToNode(destLink)
 	def printGraph(self):
 		for node in self.nodes:
-			printNode(node)
+			node.printNode()
 
 # file parsing and topology construction
 def parse(filename, filetype, graph):
