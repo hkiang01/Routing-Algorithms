@@ -3,10 +3,21 @@
 import sys
 import getopt
 
+max_node = 1
+
 class Node:
 	def __init__(self, ID=-1):
 		self.links = [] # links node is connected to
 		self.ID = ID
+		self.routeTable = []
+	def init_route_table(self):
+		global max_node
+		for i in range(1,max_node+1):
+			self.routeTable.append([i,i,self.getLinkCost(i)])
+				
+	def print_route_table(self):
+		for n in sorted(self.routeTable,key=lambda t: t[0]):
+			print "%d %d %d" % (n[0],n[1],n[2])
 	def printNode(self):
 		print 'Node: %d - (Neighbor:cost): ' % (self.ID)
 		for link in self.links:
@@ -27,6 +38,15 @@ class Node:
 			self.links.remove(link)
 		else:
 			link.cost = cost
+	def getLinkCost(self,destID):
+		if destID==self.ID:
+			return 0
+		if not destID in self.neighbors():
+			return -999
+		for link in self.links:
+			if link.destID == destID:
+				return link.cost
+		return -999
 	def addLinkToNode(self, link):
 		self.links.append(link)
 
@@ -41,10 +61,18 @@ class Graph:
 	def addNode(self, node):
 		self.nodes.append(node)
 		return node
+	def init_route_tables(self):
+		for node in self.nodes:
+			node.init_route_table()
+
+	def print_route_tables(self):
+		for node in sorted(self.nodes,key=lambda n: n.ID):
+			node.print_route_table()
 	# finds nodes in graph matching nodeId.
 	# if no match, creates new node and appends to graph
 	# returns node(s) matched or created
 	def findNode(self, nodeID,autocreate=True):
+		global max_node
 		res = [x for x in self.nodes if x.ID == nodeID]
 		for x in self.nodes:
 			if x.ID == nodeID:
@@ -52,6 +80,8 @@ class Graph:
 		if autocreate:
 			temp = Node(nodeID)
 			self.addNode(temp)
+			if nodeID>max_node:
+				max_node = nodeID
 			return self.findNode(nodeID)
 		else:
 			return None
@@ -99,14 +129,13 @@ def parse(filename, filetype, graph):
 			currLink = map(int, line.split())
 			graph.addLink(currLink[0], currLink[1], currLink[2])
 	elif(filetype == 'TOPOLOGY_CHANGES_FILE'):
-		print 'parisng topology changes file...'
+		print 'parsing topology changes file...'
 		#format: <ID of a node> <ID of another node> <cost of link>
 		lines = f.readlines()
 		for line in lines:
 			currLink = map(int, line.split())
 			graph.changeLink(currLink[0], currLink[1], currLink[2])
 			print 'affecting change: %d <-> %d with cost %d' % (currLink[0],currLink[1],currLink[2])
-			graph.printGraph()
 	elif(filetype == 'MESSAGE_FILE'):
 		print 'parsing message file...'
 	else:
@@ -114,15 +143,16 @@ def parse(filename, filetype, graph):
 
 def main():
 	if len(sys.argv) != 4:
-		print "Usage: %s [topology file] [topology changes file] [messages file]" % (sys.argv[0])
+		print "Usage: %s [topology file] [messages file] [topology changes file]" % (sys.argv[0])
 		sys.exit(1)
 	topo_file = sys.argv[1]
-	topo_changes_file = sys.argv[2]
-	messages_file = sys.argv[3]
+	topo_changes_file = sys.argv[3]
+	messages_file = sys.argv[2]
 	g = Graph()
 	parse(topo_file, 'TOPOLOGY_FILE', g)
-	g.printGraph()
 	parse(topo_changes_file,'TOPOLOGY_CHANGES_FILE',g)
+	g.init_route_tables()
+	g.print_route_tables()
 
 if __name__ == '__main__':
 	main()
