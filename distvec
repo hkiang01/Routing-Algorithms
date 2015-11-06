@@ -32,6 +32,8 @@ class Node:
 		return result
 	def localUpdate(self):
 		for i in range(len(self.routeTable)):
+			#if self.routeTable[i][0]==self.routeTable[i][1]:
+				#self.routeTable[i][2] = self.getLinkCost(self.routeTable[i][0])
 			self.routeTable[i][1] = self.routeTable[i][0]
 			self.routeTable[i][2] = self.getLinkCost(self.routeTable[i][0])
 	def getNextHop(self,destID):
