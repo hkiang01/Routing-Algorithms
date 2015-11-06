@@ -1,4 +1,4 @@
-#! /bin/python
+#!/usr/bin/python
 
 import sys
 import getopt
@@ -113,11 +113,16 @@ def parse(filename, filetype, graph):
 		print "Error: Invalid filetype in parse(filename, filetype"
 
 def main():
-	print "main"
+	if len(sys.argv) != 4:
+		print "Usage: %s [topology file] [topology changes file] [messages file]" % (sys.argv[0])
+		sys.exit(1)
+	topo_file = sys.argv[1]
+	topo_changes_file = sys.argv[2]
+	messages_file = sys.argv[3]
 	g = Graph()
-	parse('topology.txt', 'TOPOLOGY_FILE', g)
+	parse(topo_file, 'TOPOLOGY_FILE', g)
 	g.printGraph()
-	parse('changes.txt','TOPOLOGY_CHANGES_FILE',g)
+	parse(topo_changes_file,'TOPOLOGY_CHANGES_FILE',g)
 
 if __name__ == '__main__':
 	main()
