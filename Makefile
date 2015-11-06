@@ -1,1 +1,2 @@
-all:
+all: distvec
+	chmod +x distvec
