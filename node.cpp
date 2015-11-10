@@ -15,7 +15,9 @@ Node::Node(int id_in) {
 }
 
 
-Node::Node(int id_in, std::vector<Link> links_in, std::vector<RouteTableEntry> routeTable_in) {
+Node::Node(int id_in, std::vector<Link> links_in,
+	std::vector<RouteTableEntry> routeTable_in,
+	std::vector<Node> neighbors_in) {
 	id = id_in;
 	for(std::vector<Link>::iterator it = links_in.begin(); it != links_in.end(); ++it) {
 		links.push_back(*it);
@@ -23,4 +25,57 @@ Node::Node(int id_in, std::vector<Link> links_in, std::vector<RouteTableEntry> r
 	for(std::vector<RouteTableEntry>::iterator it = routeTable_in.begin(); it!= routeTable_in.end(); ++it) {
 		routeTable.push_back(*it);
 	}
+	for(std::vector<Node>::iterator it = neighbors_in.begin(); it != neighbors_in.end(); ++it) {
+		neighbors.push_back(*it);
+	}
+}
+
+void Node::printRouteTable() {
+	std::cout << "Printing Node " << id << "'s routing table..." << std::endl;
+	for(std::vector<RouteTableEntry>::iterator it = routeTable.begin(); it != routeTable.end(); ++it) {
+		it->printEntry();
+	}
+}
+
+void Node::printLinks() {
+	std::cout << "Printing links attached to Node " << id << "..." << std::endl;
+	for(std::vector<Link>::iterator it = links.begin(); it != links.end(); ++it) {
+		it->printLink();
+	}
+}
+
+void Node::printNeighbors() {
+	std::cout << "Printing neighbors of Node " << id << "..." << std::endl;
+	for(std::vector<Node>::iterator it = neighbors.begin(); it != neighbors.end(); ++it) {
+		std::cout << it->id << " ";
+	}
+	std::cout << std::endl;
+}
+
+void Node::addLink(Link link_in) {
+	links.push_back(link_in);
+}
+
+void Node::addNeighbor(Node neighbor_in) {
+	neighbors.push_back(neighbor_in);
+}
+
+struct isLink
+{
+	//source: http://stackoverflow.com/questions/15517991/search-a-vector-of-objects-by-object-attribute
+	isLink(int const& link_id) : link_id_(link_id) { }
+	bool operator () (Link const& l) { return l.destID == link_id_; }
+private:
+	int link_id_;
+};
+
+bool Node::setLink(int link_id, int new_cost) {
+	  std::vector<Link>::iterator it = std::find_if (links.begin(), links.end(), isLink(link_id));
+	  //it points to a Link in links
+	  if(it!=links.end() || links.end()->destID==link_id) { //link found
+	  	it->cost = new_cost;
+	  	return true;
+	  }
+	  //no link found
+	  return false;
 }

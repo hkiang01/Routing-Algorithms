@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm> 
 
 #include "link.h"
 #include "routetableentry.h"
@@ -13,13 +14,21 @@ class Node {
 
 		Node();
 		Node(int id_in);
-		Node(int id_in, std::vector<Link> links_in, std::vector<RouteTableEntry> routeTable_in);
+		Node(int id_in, std::vector<Link> links_in,
+			std::vector<RouteTableEntry> routeTable_in,
+			std::vector<Node> neighbors_in);
+		void printRouteTable();
+		void addLink(Link link_in);
+		bool setLink(int link_id, int new_cost);
+		void printLinks();
+		void addNeighbor(Node neighbor_in);
+		void printNeighbors();
 
-		
 
 		int id;
 		std::vector<Link> links;
 		std::vector<RouteTableEntry> routeTable;
+		std::vector<Node> neighbors;
 };
 
 #endif

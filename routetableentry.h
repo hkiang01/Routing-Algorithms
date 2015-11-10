@@ -6,10 +6,11 @@
 
 class RouteTableEntry {
 
-	RouteTableEntry();
-	RouteTableEntry(int dest_in, int src_in, int cost_in);
-
 	public:
+		RouteTableEntry();
+		RouteTableEntry(int dest_in, int src_in, int cost_in);
+		void printEntry();
+
 		int dest;
 		int next;
 		int cost;

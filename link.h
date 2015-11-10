@@ -7,10 +7,11 @@
 
 class Link {
 
-	Link();
-	Link(int destID_in, int cost);
-
 	public:
+		Link();
+		Link(int destID_in, int cost);
+		void printLink();
+
 		int destID;
 		int cost;
 };

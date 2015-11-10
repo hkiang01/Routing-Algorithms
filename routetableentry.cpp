@@ -11,3 +11,7 @@ RouteTableEntry::RouteTableEntry(int dest_in, int next_in, int cost_in) {
 	next = next_in;
 	cost = cost_in;
 }
+
+void RouteTableEntry::printEntry() {
+	std::cout << dest << " " << next << " " << cost << std::endl;
+}
