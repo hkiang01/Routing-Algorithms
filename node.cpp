@@ -14,6 +14,7 @@ Node::Node(int id_in) {
 	//routeTable = std::vector<RouteTableEntry>();
 }
 
+/*
 Node::Node(int id_in, std::vector<Link> links_in, std::vector<RouteTableEntry> routeTable_in) {
 	id = id_in;
 	for(std::vector<Link>::iterator it = links_in.begin(); it != links_in.end(); ++it) {
@@ -23,3 +24,4 @@ Node::Node(int id_in, std::vector<Link> links_in, std::vector<RouteTableEntry> r
 		routeTable.push_back(*it);
 	}
 }
+*/
