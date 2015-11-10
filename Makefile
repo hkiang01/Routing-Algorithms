@@ -5,8 +5,8 @@ EXE1 = linkstate
 EXE2 = distvec
 
 # may want to include main.o in OBJS and OBJS2
-OBJS = linkstate.o node.o link.o routetableentry.o file_core.o
-OBJS2 = distvec.o node.o link.o routetableentry.o file_core.o
+OBJS = linkstate.o node.o link.o graph.o routetableentry.o file_core.o
+OBJS2 = distvec.o node.o link.o graph.o routetableentry.o file_core.o
 
 COMPILER = g++
 COMPILER_OPTS = -c -g -O0 -Wall -Werror
@@ -35,6 +35,9 @@ node.o : node.cpp link.h routetableentry.h
 
 link.o : link.cpp
 	$(COMPILER) $(COMPILER_OPTS) link.cpp
+
+graph.o : graph.cpp
+	$(COMPILER) $(COMPILER_OPTS) graph.cpp
 
 routetableentry.o : routetableentry.cpp
 	$(COMPILER) $(COMPILER_OPTS) routetableentry.cpp
