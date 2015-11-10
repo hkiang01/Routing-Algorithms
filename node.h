@@ -20,9 +20,11 @@ class Node {
 		void printRouteTable();
 		void addLink(Link link_in);
 		bool setLink(int link_id, int new_cost);
+		int getLinkCost(int link_id);
 		void printLinks();
 		void addNeighbor(Node neighbor_in);
 		void printNeighbors();
+		RouteTableEntry findRouteTableEntry(int dest_id);
 
 
 		int id;

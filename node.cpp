@@ -72,10 +72,36 @@ private:
 bool Node::setLink(int link_id, int new_cost) {
 	  std::vector<Link>::iterator it = std::find_if (links.begin(), links.end(), isLink(link_id));
 	  //it points to a Link in links
-	  if(it!=links.end() || links.end()->destID==link_id) { //link found
+	  if(it!=links.end()) { //link found
 	  	it->cost = new_cost;
 	  	return true;
 	  }
-	  //no link found
+	  //link not found
 	  return false;
+}
+
+int Node::getLinkCost(int link_id) {
+	std::vector<Link>::iterator it = std::find_if (links.begin(), links.end(), isLink(link_id));
+	if(it!=links.end()) { //link found
+		return it->cost;
+	}
+	//link not found
+	return -1;
+}
+
+struct isRoute
+{
+	isRoute(int const& dest_id) : dest_id_(dest_id) { }
+	bool operator () (RouteTableEntry const& l) { return l.dest == dest_id_; }
+private:
+	int dest_id_;
+};
+
+RouteTableEntry Node::findRouteTableEntry(int dest_id) {
+	RouteTableEntry route; //blank route table entry
+	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
+	if(it!=routeTable.end()) {
+		return *it;
+	}
+	return route;
 }
