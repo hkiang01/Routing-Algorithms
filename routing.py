@@ -2,6 +2,7 @@
 
 import sys
 import getopt
+import Queue
 
 max_node = 1
 
@@ -14,7 +15,6 @@ class Node:
 		global max_node
 		for i in range(1,max_node+1):
 			self.routeTable.append([i,i,self.getLinkCost(i)])
-				
 	def print_route_table(self):
 		result = ""
 		for n in sorted(self.routeTable,key=lambda t: t[0]):
@@ -66,7 +66,44 @@ class Node:
 		return -999
 	def addLinkToNode(self, link):
 		self.links.append(link)
-
+	def findRouteTableElem(self, id):
+		for route in self.routeTable:
+			if route[0] == id:
+				return route
+	# link state algorithm
+	# node_list is nodes in graph
+	# source: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Using_a_priority_queue
+	def local_link_state(self, node_list, graph):
+		# initialization phase
+		self.routeTable = {} # clear route table for safety
+		N = {} # nodes already found min for
+		q = Queue.PriorityQueue() # priority queue sorted by distance from self node
+		# self
+		N.append(self)
+		node_list.remove(self)
+		# neighbors
+		for neighbor in self.neighbors():
+			# [dest, next, cost]
+			self.routeTable.append([neighbor.ID, neighbor.ID, self.getLinkCost(neighbor.ID)])
+			q.put((self.getLinkCost(neighbor.ID), neighbor.ID)) # (k,v) = (D(u), ID)
+		# non-neighbors
+		for non_neighbor in node_list:
+			self.routeTable.append([non_neighbor.ID, None, -999]) #-999 for infinity
+		# Dijkstra's phase
+		while (!q.empty()):
+			# find node w not in N s.t. D(w) is minimum
+			u = q.get() # (D(u), id), access id by u[1], cost by u[0]
+			u_node = graph.findNode(u[1])
+			N.append(u_node) # add u to N
+			dist_u = self.findRouteTableElem(u[1])
+			for neighbor in u_node.neighbors() # neigbor is an id
+				v_node = graph.findNode(neighbor)
+				v_route = self.findRouteTableElem(v_node.ID)
+				alt = dist_u + u_node.getLinkCost(neighbor)
+				if alt < v_route[2]: # cost from self to v is v_route[2]
+					v_route[2] = alt # todo: MAKE SURE THIS IS BY REFERENCE!!!
+					v_route[1] = u_node.ID # prev
+					# todo: q.decrease_priority(v, alt)
 class Link:
 	def __init__(self, destID=-1, cost=0):
 		self.destID = destID
@@ -139,7 +176,9 @@ class Graph:
 						#print n
 					node.updateRouteTable(currBest[0],currBest[1],currBest[2])
 							
-
+	def link_state(self):
+		for node in self.nodes
+			node.local_link_state(self.nodes, self)
 	def route_tables_toString(self):
 		result = ""
 		for node in sorted(self.nodes,key=lambda n: n.ID):
@@ -263,6 +302,8 @@ def main():
 	f = open("output.txt","w")
 	f.write(result)
 	f.close()
+
+
 	#g.printGraph()
 	#print g.route_tables_toString()
 	#print g.route_path(1,2)
