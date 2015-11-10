@@ -2,12 +2,12 @@
 
 RouteTableEntry::RouteTableEntry() {
 	dest = -1;
-	src = -1;
+	next = -1;
 	cost = -1;
 }
 
-RouteTableEntry::RouteTableEntry(int dest_in, int src_in, int cost_in) {
+RouteTableEntry::RouteTableEntry(int dest_in, int next_in, int cost_in) {
 	dest = dest_in;
-	src = src_in;
+	next = next_in;
 	cost = cost_in;
 }

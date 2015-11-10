@@ -7,6 +7,9 @@
 
 class Link {
 
+	Link();
+	Link(int destID_in, int cost);
+
 	public:
 		int destID;
 		int cost;
