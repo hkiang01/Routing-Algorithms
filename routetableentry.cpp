@@ -3,7 +3,7 @@
 RouteTableEntry::RouteTableEntry() {
 	dest = -1;
 	next = -1;
-	cost = -1;
+	cost = -999;
 }
 
 RouteTableEntry::RouteTableEntry(int dest_in, int next_in, int cost_in) {

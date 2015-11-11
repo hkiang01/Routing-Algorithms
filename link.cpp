@@ -2,7 +2,7 @@
 
 Link::Link() {
 	destID = -1;
-	cost = -1;
+	cost = -999;
 }
 
 Link::Link(int destID_in, int cost_in) {

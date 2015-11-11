@@ -86,7 +86,7 @@ int Node::getLinkCost(int link_id) {
 		return it->cost;
 	}
 	//link not found
-	return -1;
+	return -999;
 }
 
 struct isRoute
