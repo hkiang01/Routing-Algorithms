@@ -105,3 +105,12 @@ RouteTableEntry Node::findRouteTableEntry(int dest_id) {
 	}
 	return route;
 }
+
+RouteTableEntry Node::getNextHop(int dest_id) {
+	RouteTableEntry route; //blank route table entr
+	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
+	if(it!=routeTable.end()) {
+		return *it;
+	}
+	return route;
+}

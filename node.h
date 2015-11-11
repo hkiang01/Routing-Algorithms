@@ -25,6 +25,7 @@ class Node {
 		void addNeighbor(Node neighbor_in);
 		void printNeighbors();
 		RouteTableEntry findRouteTableEntry(int dest_id);
+		RouteTableEntry getNextHop(int dest_id);
 
 
 		int id;
