@@ -70,3 +70,23 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 	destNode.setLink(sourceID, newCost);
 	return true;
 }
+
+int Graph::routeCost(int sourceID, int destID) {
+	if(sourceID < 0 || destID < 0)
+		return -999;
+	if(sourceID == destID)
+		return 0;
+	Node node = this->findNode(sourceID);
+	RouteTableEntry entry = node.getNextHop(destID);
+	return entry.cost;
+}
+
+std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> path) {
+	if(sourceID < 0 || destID < 0 || sourceID == destID)
+		return path;
+	Node node = this->findNode(sourceID);
+	RouteTableEntry entry = node.getNextHop(destID);
+	int nextHop = entry.next;
+	path.push_back(nextHop);
+	return routePath(nextHop, destID, path);
+}

@@ -14,6 +14,8 @@ class Graph {
 		Node findNode(int nodeID);
 		bool addLink(int sourceID, int destID, int cost);
 		bool changeLink(int sourceID, int destID, int newCost);
+		int routeCost(int sourceID, int destID);
+		std::vector<int> routePath(int sourceID, int destID, std::vector<int> path);
 
 		int id;
 		std::vector<Node> nodes;
