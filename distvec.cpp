@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
+#include <fstream>
 #include "node.h"
 #include "link.h"
 #include "graph.h"
@@ -97,7 +98,10 @@ int main(int argc, char * argv []) {
 			ss<<sendMessage(i);
 		}
 	}
-	std::cout<<ss.str();
+	//std::cout<<ss.str();
+	std::ofstream out("output.txt");
+	out<<ss.str();
+	out.close();
 	free(::fh);
 	free(::g);
 	return 0;
