@@ -171,3 +171,10 @@ void Node::initRoutingTables(int maxNode) {
 		routeTable.push_back(entry);
 	}
 }
+
+void Node::localUpdate() {
+	for(std::vector<RouteTableEntry>::iterator it = routeTable.begin(); it!= routeTable.end(); ++it) {
+		it->next = it->dest;
+		it->cost = this->getLinkCost(it->dest);
+	}
+}

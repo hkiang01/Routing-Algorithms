@@ -32,6 +32,7 @@ class Node {
 		RouteTableEntry * findRouteTableEntry(int dest_id);
 		RouteTableEntry * getNextHop(int dest_id);
 		void initRoutingTables(int maxNode);
+		void localUpdate();
 
 		int id;
 		std::vector<Link> links;

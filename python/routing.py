@@ -32,8 +32,8 @@ class Node:
 		return result
 	def localUpdate(self):
 		for i in range(len(self.routeTable)):
-			self.routeTable[i][1] = self.routeTable[i][0]
-			self.routeTable[i][2] = self.getLinkCost(self.routeTable[i][0])
+			self.routeTable[i][1] = self.routeTable[i][0] # next <- dest
+			self.routeTable[i][2] = self.getLinkCost(self.routeTable[i][0]) #cost <- getLinkCost(dest)
 	def getNextHop(self,destID):
 		for n in self.routeTable:
 			if n[0]==destID:
