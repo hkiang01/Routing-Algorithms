@@ -22,28 +22,28 @@ private:
 	int nodeID_;
 };
 
-Node Graph::findNode(int nodeID) {
+Node * Graph::findNode(int nodeID) {
 	Node temp;
 	std::vector<Node>::iterator it = std::find_if (nodes.begin(), nodes.end(), isNode(nodeID));
 	if(it!=nodes.end()) {
-		return *it;
+		return &(*it);
 	}
-	return temp;
+	return NULL;
 }
 
 bool Graph::addLink(int sourceID, int destID, int cost) {
 	if(cost == -999)
 		return false;
 
-	Node sourceNode = this->findNode(sourceID);
-	Node destNode = this->findNode(destID);
-	if(sourceNode.id == -1 || destNode.id == -1)
+	Node * sourceNode = this->findNode(sourceID);
+	Node * destNode = this->findNode(destID);
+	if(sourceNode == NULL || destNode == NULL)
 		return false;
 
 	Link sourceLink = Link(destID, cost);
-	sourceNode.addLink(sourceLink);
+	sourceNode->addLink(sourceLink);
 	Link destLink = Link(sourceID, cost);
-	destNode.addLink(destLink);
+	destNode->addLink(destLink);
 	return true;
 
 }
@@ -52,22 +52,22 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 	if(newCost == -999)
 		return false;
 
-	Node sourceNode = this->findNode(sourceID);
-	Node destNode = this->findNode(destID);
-	if(sourceNode.id == -1 || destNode.id == -1) {
-		perror("Error - changeLink: source or dest node non-existant in graph\n");
+	Node * sourceNode = this->findNode(sourceID);
+	Node * destNode = this->findNode(destID);
+	if(sourceNode == NULL || destNode == NULL) {
+		//perror("Error - changeLink: source or dest node non-existant in graph\n");
 		return false;
 	}
 
 	//find neighbor of sourceNode that is of id destID
-	std::vector<Node>::iterator it = std::find_if (sourceNode.neighbors.begin(), sourceNode.neighbors.end(), isNode(destID));
-	if(it!=sourceNode.neighbors.end()) {//no connection exists
-		perror("Error - changeLink: no connection exists between source and dest node\n");
+	std::vector<Node>::iterator it = std::find_if (sourceNode->neighbors.begin(), sourceNode->neighbors.end(), isNode(destID));
+	if(it!=sourceNode->neighbors.end()) {//no connection exists
+		//perror("Error - changeLink: no connection exists between source and dest node\n");
 		return false;
 	}
 
-	sourceNode.setLink(destID, newCost);
-	destNode.setLink(sourceID, newCost);
+	sourceNode->setLink(destID, newCost);
+	destNode->setLink(sourceID, newCost);
 	return true;
 }
 
@@ -76,16 +76,16 @@ int Graph::routeCost(int sourceID, int destID) {
 		return -999;
 	if(sourceID == destID)
 		return 0;
-	Node node = this->findNode(sourceID);
-	RouteTableEntry entry = node.getNextHop(destID);
+	Node * node = this->findNode(sourceID);
+	RouteTableEntry entry = node->getNextHop(destID);
 	return entry.cost;
 }
 
 std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> path) {
 	if(sourceID < 0 || destID < 0 || sourceID == destID)
 		return path;
-	Node node = this->findNode(sourceID);
-	RouteTableEntry entry = node.getNextHop(destID);
+	Node * node = this->findNode(sourceID);
+	RouteTableEntry entry = node->getNextHop(destID);
 	int nextHop = entry.next;
 	path.push_back(nextHop);
 	return routePath(nextHop, destID, path);
