@@ -97,6 +97,7 @@ int main(int argc, char * argv []) {
 			ss<<sendMessage(i);
 		}
 	}
+	std::cout<<ss.str();
 	free(::fh);
 	free(::g);
 	return 0;
