@@ -125,3 +125,41 @@ std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> pat
 	path.push_back(nextHop);
 	return routePath(nextHop, destID, path);
 }
+
+void Graph::distVector() {
+	bool changed = true;
+	for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
+		it->localUpdate();
+	}
+	while(changed) {
+		changed = false;
+		for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
+			Node *currNode = &(*it);
+			for(std::vector<RouteTableEntry>::iterator itt = currNode->routeTable.begin(); itt!= currNode->routeTable.end(); ++itt) {
+				RouteTableEntry *currBest = &(*itt);
+				if(itt->dest == currNode->id) continue;
+				for(std::vector<Node>::iterator ittt = currNode->neighbors.begin(); it!=currNode->neighbors.end(); ++ittt) {
+					Node *currNeighbor = &(*ittt);
+					RouteTableEntry *proposed = currNeighbor->getNextHop(currBest->dest);
+					int newCost = currNode->getLinkCost(currNeighbor->id) + proposed->cost;
+					if(proposed->cost==-999) continue;
+					if(newCost == currBest->cost) {
+						if(currBest->next > currNeighbor->id) {
+							currBest->next = currNeighbor->id;
+							changed = true;
+							continue;
+						}
+						continue;
+					}
+					if(newCost < currBest->cost || currBest->cost < 0) {
+						currBest->next = currNeighbor->id;
+						currBest->cost = newCost;
+						changed = true;
+					}
+				}
+				currNode->updateRouteTable(currBest->dest, currBest->next, currBest->cost);
+			}
+		}
+	}
+
+}

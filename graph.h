@@ -17,6 +17,7 @@ class Graph {
 		void addLine(int sourceID, int destID, int cost);
 		int routeCost(int sourceID, int destID);
 		std::vector<int> routePath(int sourceID, int destID, std::vector<int> path);
+		void distVector();
 
 		int id;
 		std::vector<Node> nodes;
