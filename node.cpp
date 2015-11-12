@@ -4,14 +4,18 @@
 Node::Node()
 {
 	id = -1;
-	//links = std::vector<Link>();
-	//routeTable = std::vector<RouteTableEntry>();
+	links.clear();
+	links = std::vector<Link>();
+	routeTable.clear();
+	routeTable = std::vector<RouteTableEntry>();
 }
 
 Node::Node(int id_in) {
 	id = id_in;
-	//links = std::vector<Link>();
-	//routeTable = std::vector<RouteTableEntry>();
+	links.clear();
+	links = std::vector<Link>();
+	routeTable.clear();
+	routeTable = std::vector<RouteTableEntry>();
 }
 
 
@@ -52,6 +56,23 @@ void Node::printNeighbors() {
 	std::cout << std::endl;
 }
 
+struct isNode
+{
+	isNode(int const& node_id) : node_id_(node_id) {  }
+	bool operator () (Node const& n) { return n.id == node_id_;}
+private:
+	int node_id_;
+};
+
+bool Node::removeNeighbor(int neighborID) {
+	std::vector<Node>::iterator it = std::find_if (neighbors.begin(), neighbors.end(), isNode(neighborID));
+	if(it!=neighbors.end()) { //node found, can be deleted
+		neighbors.erase(it);
+		return true;
+	}
+	return false;
+}
+
 void Node::addLink(Link link_in) {
 	links.push_back(link_in);
 }
@@ -77,6 +98,16 @@ bool Node::setLink(int link_id, int new_cost) {
 	  	return true;
 	  }
 	  //link not found
+	  return false;
+}
+
+bool Node::removeLink(int link_id) {
+	  std::vector<Link>::iterator it = std::find_if (links.begin(), links.end(), isLink(link_id));
+	  //it points to a Link in links
+	  if(it!=links.end()) { //link found, can be removed
+	  	links.erase(it);
+	  	return true;
+	  }
 	  return false;
 }
 
