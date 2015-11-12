@@ -208,7 +208,17 @@ void Graph::linkState() {
 
 		//Loop
 		//find node w not in knowns such that distance from *currNode to w is minimum
-		//int minDist = 
+		int minDist = INT_MAX;
+		//Node *w;
+		for(std::vector<Node>::iterator itt = this->nodes.begin(); it!= this->nodes.end(); ++it) {
+			int dist = currNode->getLinkCost(itt->id);
+			if(dist < minDist) {
+				//bool inKnowns = false;
+				for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
+
+				}
+			}
+		}
 	}
 
 }
