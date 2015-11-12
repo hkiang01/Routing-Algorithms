@@ -3,16 +3,42 @@
 #include <stdlib.h>
 #include "node.h"
 #include "link.h"
+#include "graph.h"
 #include "routetableentry.h"
 #include "file_core.h"
 using namespace std;
+FileHandler * fh;
+Graph * g;
+int currChange = 0;
 
-FileHandler * loadFiles(string topo, string messages, string changes){
-	FileHandler * fh = new FileHandler();
-	fh->parse(topo,"TOPO_FILE");
-	fh->parse(messages,"MESSAGES_FILE");
-	fh->parse(changes,"CHANGES_FILE");
-	return fh;
+bool loadGraph(){
+	::g = new Graph();
+	int numInit = ::fh->getNumInit();
+	int i = 0;
+	int * line;
+	for(i=0;i<numInit;i++){
+		line = ::fh->getGraph(i);
+		::g->addLine(line[0],line[1],line[2]);
+	}
+	return true;
+}
+
+bool makeChange(){
+	int numChange = ::fh->getNumChanges();
+	if(::currChange>=numChange)
+		return false;
+	int * line = ::fh->getChange(::currChange);
+	::g->changeLink(line[0],line[1],line[2]);
+	::currChange++;
+	return true;
+}
+
+
+void loadFiles(string topo, string messages, string changes){
+	::fh = new FileHandler();
+	::fh->parse(topo,"TOPO_FILE");
+	::fh->parse(messages,"MESSAGES_FILE");
+	::fh->parse(changes,"CHANGES_FILE");
 }
 
 int main(int argc, char * argv []) {
@@ -23,8 +49,10 @@ int main(int argc, char * argv []) {
 	string topo(argv[1]);
 	string messages(argv[2]);
 	string changes(argv[3]);
-	FileHandler * fh = loadFiles(topo,messages,changes);
+	loadFiles(topo,messages,changes);
+	loadGraph();
 	std::cout << "test" << std::endl;
-	free(fh);
+	free(::fh);
+	free(::g);
 	return 0;
 }
