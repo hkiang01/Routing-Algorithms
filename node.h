@@ -29,10 +29,12 @@ class Node {
 		void printLinks();
 		void addNeighbor(Node neighbor_in);
 		bool removeNeighbor(int neighborID);
+		bool isNeighbor(int neighborID);
 		void printNeighbors();
 		RouteTableEntry * findRouteTableEntry(int dest_id);
 		RouteTableEntry * getNextHop(int dest_id);
 		void initRoutingTables(int maxNode);
+		void newRouteTableEntry(int dest_in, int next_in, int cost_in);
 		void localUpdate();
 		bool updateRouteTable(int dest_in, int next_in, int cost_in);
 

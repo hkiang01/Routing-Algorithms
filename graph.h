@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <stdio.h>
+#include <climits>
 #include "node.h"
 
 class Graph {

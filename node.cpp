@@ -74,6 +74,14 @@ bool Node::removeNeighbor(int neighborID) {
 	return false;
 }
 
+bool Node::isNeighbor(int neighborID) {
+	std::vector<Node>::iterator it = std::find_if (neighbors.begin(), neighbors.end(), isNode(neighborID));
+	if(it!=neighbors.end()) { //node found, can be deleted
+		return true;
+	}
+	return false;
+}
+
 void Node::addLink(Link link_in) {
 	links.push_back(link_in);
 }
@@ -199,4 +207,9 @@ bool Node::updateRouteTable(int dest_in, int next_in, int cost_in) {
 		return true;
 	}
 	return false;
+}
+
+void Node::newRouteTableEntry(int dest_in, int next_in, int cost_in) {
+	RouteTableEntry entry = RouteTableEntry(dest_in, next_in, cost_in);
+	routeTable.push_back(entry);
 }

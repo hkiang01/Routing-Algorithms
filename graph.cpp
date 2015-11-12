@@ -189,27 +189,100 @@ void Graph::distVector() {
 	}
 
 }
-
+/*
 void Graph::linkState() {
-	//Initialization
-	std::vector<Node> knowns;
+
 	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+		//Initialization
 		Node *currNode = &(*it);
+		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
-		currNode->initRoutingTables(this->nodes.size());
-		/*
-		for(std::vector<Node>::iterator itt = currNode->neighbors.begin(); itt != currNode->neighbors.end(); ++it) {
-			Node *currNeighbor = &(*itt);
-			int neighborID = currNeighbor->id;
-			int neighborCost = currNode->getLinkCost(neighborID);
-			currNeighbor->routeTable.push_back(neighborID, neighborID, neighborCost);
-		}*/
+		//for all nodes v, if v adjacent to u, then D(v) = c(u,v) else D(v) = INFINITY
+		for(std::vector<Node>::iterator itt = this->nodes.begin(); itt != this->nodes.end(); ++itt) {
+			Node *v = &(*itt);
+			if(currNode->id == v->id) { //same node
+				RouteTableEntry *entry = currNode->findRouteTableEntry(v->id);
+				if(!entry) currNode->newRouteTableEntry(v->id, v->id, 0); //new route table entry if none exists
+				else currNode->updateRouteTable(v->id, v->id, 0); //update cost to 0
+			}
+			else if (currNode->isNeighbor(v->id)) {
+				RouteTableEntry *entry = currNode->findRouteTableEntry(v->id);
+				if (!entry) currNode->newRouteTableEntry(v->id, v->id, currNode->getLinkCost(v->id));
+				else currNode->updateRouteTable(v->id, v->id, currNode->getLinkCost(v->id));
+			}
+			else {
+				RouteTableEntry *entry = currNode->findRouteTableEntry(v->id);
+				if(!entry) currNode->newRouteTableEntry(v->id, -999, -999);
+				else currNode->updateRouteTable(v->id, -999, -999);
+			}
+		}
 
 
 		//Loop
 		//find node w not in knowns such that distance from *currNode to w is minimum
-		//int minDist = 
+		int minDist = INT_MAX;
+		Node *w;
+		for(std::vector<Node>::iterator itt = this->nodes.begin(); it!= this->nodes.end(); ++it) {
+			Node *candidate = &(*itt);
+			int dist = currNode->getLinkCost(candidate->id);
+			if(dist < minDist && dist!= -999) {
+				bool inKnowns = false;
+				for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
+					Node *knownNode = &(*ittt);
+					if(knownNode->id==candidate->id){
+						inKnowns = true;
+						break;
+					}
+				}
+				if(!inKnowns) {
+					minDist = dist;
+					w = candidate;
+				}
+			}
+		}
+		//At this point, w points to node not in knowns whose distance from currNode is least
+		if(w) {
+			knowns.push_back(*w);
+			//update D(v) for all v adjacent to w and not in knowns
+			for(std::vector<Node>::iterator itt = w->neighbors.begin(); itt != w->neighbors.end(); ++itt) {
+				Node *currNeighbor = &(*itt);
+				for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++it) {
+					Node *currKnown = &(*ittt);
+					if(currNeighbor->id != currKnown->id) {
+						Node *toUpdate = this->findNode(currNeighbor->id);
+						int currDist = currNode->getLinkCost(toUpdate->id);
+						int newDist = currNode->getLinkCost(w->id) + w->getLinkCost(toUpdate->id);
+						if(newDist < currDist) {
+							toUpdate->updateRouteTable(toUpdate->id, w->id, newDist);
+						}
+					}
+				}
+			}
+		}
 	}
 
 }
+*/
 
+void Graph::linkState() {
+	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+		
+		Node *currNode = &(*it);
+		
+		//std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
+		//std::cout << currNode->printRoutingTableInOrder() << std::endl;
+		//Initialization
+		std::vector<Node> knowns;
+		knowns.push_back(*currNode);
+		//Initialization already done in linkstate.cpp's call to initRoutingTables
+		bool done = false; //one iter of while
+		while(knowns.size() != nodes.size() && !done) {
+
+			//find w not in knowns such that D(w) is minimum
+			
+
+			done = true; //one iter of while
+		}
+
+	}	
+}
