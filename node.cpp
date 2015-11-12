@@ -178,3 +178,13 @@ void Node::localUpdate() {
 		it->cost = this->getLinkCost(it->dest);
 	}
 }
+
+bool Node::updateRouteTable(int dest_in, int next_in, int cost_in) {
+	RouteTableEntry *entry = this->findRouteTableEntry(dest_in);
+	if(entry) {
+		entry->next = next_in;
+		entry->cost = cost_in;
+		return true;
+	}
+	return false;
+}
