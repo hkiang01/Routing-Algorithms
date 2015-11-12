@@ -74,7 +74,27 @@ int main(int argc, char * argv []) {
 	string changes(argv[3]);
 	loadFiles(topo,messages,changes);
 	loadGraph();
-	std::cout << "test" << std::endl;
+	stringstream ss;
+	::g->distVector();
+	int numMessages = ::fh->getNumMessages();
+	int i = 0;
+	int totalNodes = ::g->nodes.size();
+	for(i=1;i<=totalNodes;i++){
+		ss<<::g->nodes[i].printRoutingTableInOrder();
+	}	
+	for(i=0;i<numMessages;i++){
+		ss<<sendMessage(i);
+	}
+	while(makeChange()){
+		::g->distVector();
+		for(i=1;i<=totalNodes;i++){
+			ss<<::g->nodes[i].printRoutingTableInOrder();
+		}
+		for(i=0;i<numMessages;i++){
+			ss<<sendMessage(i);
+		}
+	}
+	std::cout << ss.str() << std::endl;
 	free(::fh);
 	free(::g);
 	return 0;
