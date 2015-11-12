@@ -18,6 +18,7 @@ class Graph {
 		int routeCost(int sourceID, int destID);
 		std::vector<int> routePath(int sourceID, int destID, std::vector<int> path);
 		void distVector();
+		void linkState();
 
 		int id;
 		std::vector<Node> nodes;

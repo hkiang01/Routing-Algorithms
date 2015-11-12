@@ -189,3 +189,27 @@ void Graph::distVector() {
 	}
 
 }
+
+void Graph::linkState() {
+	//Initialization
+	std::vector<Node> knowns;
+	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+		Node *currNode = &(*it);
+		knowns.push_back(*currNode);
+		currNode->initRoutingTables(this->nodes.size());
+		/*
+		for(std::vector<Node>::iterator itt = currNode->neighbors.begin(); itt != currNode->neighbors.end(); ++it) {
+			Node *currNeighbor = &(*itt);
+			int neighborID = currNeighbor->id;
+			int neighborCost = currNode->getLinkCost(neighborID);
+			currNeighbor->routeTable.push_back(neighborID, neighborID, neighborCost);
+		}*/
+
+
+		//Loop
+		//find node w not in knowns such that distance from *currNode to w is minimum
+		//int minDist = 
+	}
+
+}
+
