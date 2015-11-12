@@ -108,16 +108,16 @@ int Graph::routeCost(int sourceID, int destID) {
 	if(sourceID == destID)
 		return 0;
 	Node * node = this->findNode(sourceID);
-	RouteTableEntry entry = node->getNextHop(destID);
-	return entry.cost;
+	RouteTableEntry * entry = node->getNextHop(destID);
+	return entry->cost;
 }
 
 std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> path) {
 	if(sourceID < 0 || destID < 0 || sourceID == destID)
 		return path;
 	Node * node = this->findNode(sourceID);
-	RouteTableEntry entry = node->getNextHop(destID);
-	int nextHop = entry.next;
+	RouteTableEntry * entry = node->getNextHop(destID);
+	int nextHop = entry->next;
 	if(nextHop<0){
 		std::vector<int> t;
 		return t;

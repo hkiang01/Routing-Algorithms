@@ -128,20 +128,20 @@ private:
 	int dest_id_;
 };
 
-RouteTableEntry Node::findRouteTableEntry(int dest_id) {
+RouteTableEntry * Node::findRouteTableEntry(int dest_id) {
 	RouteTableEntry route; //blank route table entry
 	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
 	if(it!=routeTable.end()) {
-		return *it;
+		return &(*it);
 	}
-	return route;
+	return NULL;
 }
 
-RouteTableEntry Node::getNextHop(int dest_id) {
+RouteTableEntry * Node::getNextHop(int dest_id) {
 	RouteTableEntry route; //blank route table entr
 	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
 	if(it!=routeTable.end()) {
-		return *it;
+		return &(*it);
 	}
-	return route;
+	return NULL;
 }

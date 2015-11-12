@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <stdlib.h>
 #include "node.h"
 #include "link.h"
@@ -33,6 +34,28 @@ bool makeChange(){
 	return true;
 }
 
+string sendMessage(int i){
+	int numMessage = ::fh->getNumMessages();
+	if(i>=numMessage)
+		return "";
+	string message = ::fh->getMessage(i);
+	int source = ::fh->getSource(i);
+	int dest = ::fh->getDest(i);
+	int cost = ::g->routeCost(source,dest);
+	if(cost<0){
+		stringstream sstm;
+		sstm<<"from "<<source<<" to "<<dest<<" hops unreachable message "<<message<<endl;
+		return sstm.str();
+	}
+	vector<int> path = ::g->routePath(source,dest,vector<int>());
+	stringstream sstm;
+	sstm<<"from "<<source<<" to "<<dest<<" hops";
+	for(vector<int>::iterator it = path.begin();it!=path.end(); it++){
+		sstm<<" "<<*it;
+	}
+	sstm<<" message "<<message<<endl;
+	return sstm.str();
+}
 
 void loadFiles(string topo, string messages, string changes){
 	::fh = new FileHandler();
