@@ -48,9 +48,25 @@ bool Graph::addLink(int sourceID, int destID, int cost) {
 
 }
 
+
+
 bool Graph::changeLink(int sourceID, int destID, int newCost) {
-	if(newCost == -999)
-		return false;
+	if(newCost <0){
+		Node * sourceNode = this->findNode(sourceID);
+		Node * destNode = this->findNode(destID);
+		if(sourceNode==NULL||destNode==NULL)
+			return false;
+		std::vector<Node>::iterator it = std::find_if (sourceNode->neighbors.begin(), sourceNode->neighbors.end(), isNode(destID));
+        	if(it!=sourceNode->neighbors.end()) {//no connection exists
+                //perror("Error - changeLink: no connection exists between source and dest node\n");
+                	return false;
+        	}
+		sourceNode->removeLink(destID);
+		sourceNode->removeNeighbor(destID);
+		destNode->removeLink(sourceID);
+		destNode->removeNeighbor(sourceID);
+		return true;
+	}
 
 	Node * sourceNode = this->findNode(sourceID);
 	Node * destNode = this->findNode(destID);
@@ -71,6 +87,21 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 	return true;
 }
 
+void Graph::addLine(int sourceID, int destID, int cost){
+	if(cost<0){
+		return;
+	}
+	if(!this->findNode(sourceID)){
+		Node s(sourceID);
+		this->addNode(s);
+	}
+	if(!this->findNode(destID)){
+		Node d(destID);
+		this->addNode(d);
+	}
+	this->addLink(sourceID,destID,cost);
+}
+
 int Graph::routeCost(int sourceID, int destID) {
 	if(sourceID < 0 || destID < 0)
 		return -999;
@@ -87,6 +118,10 @@ std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> pat
 	Node * node = this->findNode(sourceID);
 	RouteTableEntry entry = node->getNextHop(destID);
 	int nextHop = entry.next;
+	if(nextHop<0){
+		std::vector<int> t;
+		return t;
+	}
 	path.push_back(nextHop);
 	return routePath(nextHop, destID, path);
 }
