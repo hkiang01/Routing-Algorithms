@@ -1,5 +1,6 @@
 #include "node.h"
 
+
 //default constructor
 Node::Node()
 {
@@ -144,4 +145,20 @@ RouteTableEntry * Node::getNextHop(int dest_id) {
 		return &(*it);
 	}
 	return NULL;
+}
+
+std::string Node::printRoutingTableInOrder() {
+	std::string retString;
+	std::stringstream ss;
+	std::vector<int> destIDs;
+	for(std::vector<RouteTableEntry>::iterator it = routeTable.begin(); it!=routeTable.end(); ++it) {
+		destIDs.push_back(it->dest);
+	}
+	std::sort(destIDs.begin(), destIDs.end());
+	for(std::vector<int>::iterator it=destIDs.begin(); it!= destIDs.end(); ++it) {
+		RouteTableEntry *entry = this->findRouteTableEntry(*it);
+		ss<<entry->dest<<" "<<entry->next<<" "<<entry->cost<<std::endl;
+	}
+
+	return ss.str();
 }
