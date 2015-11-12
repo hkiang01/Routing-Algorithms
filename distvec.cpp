@@ -66,7 +66,6 @@ void loadFiles(string topo, string messages, string changes){
 
 int main(int argc, char * argv []) {
 	if(argc!=4){
-		cout<<"Error, wrong number of arguments"<<endl;
 		return 1;
 	}
 	string topo(argv[1]);
@@ -75,12 +74,16 @@ int main(int argc, char * argv []) {
 	loadFiles(topo,messages,changes);
 	loadGraph();
 	stringstream ss;
-	::g->distVector();
+	
 	int numMessages = ::fh->getNumMessages();
 	int i = 0;
 	int totalNodes = ::g->nodes.size();
 	for(i=1;i<=totalNodes;i++){
-		ss<<::g->nodes[i].printRoutingTableInOrder();
+		g->findNode(i)->initRoutingTables(totalNodes);
+	}
+	::g->distVector();
+	for(i=1;i<=totalNodes;i++){
+		ss<<::g->findNode(i)->printRoutingTableInOrder();
 	}	
 	for(i=0;i<numMessages;i++){
 		ss<<sendMessage(i);
@@ -88,13 +91,12 @@ int main(int argc, char * argv []) {
 	while(makeChange()){
 		::g->distVector();
 		for(i=1;i<=totalNodes;i++){
-			ss<<::g->nodes[i].printRoutingTableInOrder();
+			ss<<::g->findNode(i)->printRoutingTableInOrder();
 		}
 		for(i=0;i<numMessages;i++){
 			ss<<sendMessage(i);
 		}
 	}
-	std::cout << ss.str() << std::endl;
 	free(::fh);
 	free(::g);
 	return 0;

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <stdio.h>
 
 #include "link.h"
 #include "routetableentry.h"

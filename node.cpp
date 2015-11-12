@@ -5,10 +5,10 @@
 Node::Node()
 {
 	id = -1;
-	links.clear();
-	links = std::vector<Link>();
-	routeTable.clear();
-	routeTable = std::vector<RouteTableEntry>();
+	//links.clear();
+	//links = std::vector<Link>();
+	//routeTable.clear();
+	//routeTable = std::vector<RouteTableEntry>();
 }
 
 Node::Node(int id_in) {
@@ -117,6 +117,7 @@ int Node::getLinkCost(int link_id) {
 	if(it!=links.end()) { //link found
 		return it->cost;
 	}
+	if(link_id==id) return 0;
 	//link not found
 	return -999;
 }
@@ -130,21 +131,29 @@ private:
 };
 
 RouteTableEntry * Node::findRouteTableEntry(int dest_id) {
-	RouteTableEntry route; //blank route table entry
-	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
-	if(it!=routeTable.end()) {
-		return &(*it);
+	//RouteTableEntry route; //blank route table entry
+	//std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
+	for(std::vector<RouteTableEntry>::iterator it = routeTable.begin();it!=routeTable.end();++it){
+		if((*it).dest==dest_id)
+			return &(*it);
 	}
 	return NULL;
+	//if(it!=routeTable.end()) {
+	//	return &(*it);
+	//}
+	//return NULL;
 }
 
 RouteTableEntry * Node::getNextHop(int dest_id) {
+	return this->findRouteTableEntry(dest_id);
+	/**
 	RouteTableEntry route; //blank route table entr
 	std::vector<RouteTableEntry>::iterator it = std::find_if (routeTable.begin(), routeTable.end(), isRoute(dest_id));
 	if(it!=routeTable.end()) {
 		return &(*it);
 	}
 	return NULL;
+	**/
 }
 
 std::string Node::printRoutingTableInOrder() {
@@ -166,9 +175,9 @@ std::string Node::printRoutingTableInOrder() {
 
 void Node::initRoutingTables(int maxNode) {
 	int i;
-	for(i=0; i<maxNode; i++) {
-		RouteTableEntry entry = RouteTableEntry(i, i, this->getLinkCost(i));
-		routeTable.push_back(entry);
+	for(i=1; i<=maxNode; i++) {
+		RouteTableEntry * entry = new RouteTableEntry(i, i, this->getLinkCost(i));
+		routeTable.push_back(*entry);
 	}
 }
 

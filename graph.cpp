@@ -42,8 +42,10 @@ bool Graph::addLink(int sourceID, int destID, int cost) {
 
 	Link sourceLink = Link(destID, cost);
 	sourceNode->addLink(sourceLink);
+	sourceNode->addNeighbor(*destNode);
 	Link destLink = Link(sourceID, cost);
 	destNode->addLink(destLink);
+	destNode->addNeighbor(*sourceNode);
 	return true;
 
 }
@@ -51,11 +53,21 @@ bool Graph::addLink(int sourceID, int destID, int cost) {
 
 
 bool Graph::changeLink(int sourceID, int destID, int newCost) {
-	if(newCost <0){
+	if(newCost<0){
 		Node * sourceNode = this->findNode(sourceID);
 		Node * destNode = this->findNode(destID);
 		if(sourceNode==NULL||destNode==NULL)
 			return false;
+		for(std::vector<Node>::iterator it = sourceNode->neighbors.begin();it!=sourceNode->neighbors.end();it++){
+			if(it->id==destID){
+				sourceNode->removeLink(destID);
+                		sourceNode->removeNeighbor(destID);
+                		destNode->removeLink(sourceID);
+                		destNode->removeNeighbor(sourceID);
+                		return true;
+			}
+		}
+		/**
 		std::vector<Node>::iterator it = std::find_if (sourceNode->neighbors.begin(), sourceNode->neighbors.end(), isNode(destID));
         	if(it!=sourceNode->neighbors.end()) {//no connection exists
                 //perror("Error - changeLink: no connection exists between source and dest node\n");
@@ -66,6 +78,8 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 		destNode->removeLink(sourceID);
 		destNode->removeNeighbor(sourceID);
 		return true;
+		**/
+		return false;
 	}
 
 	Node * sourceNode = this->findNode(sourceID);
@@ -76,15 +90,23 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 	}
 
 	//find neighbor of sourceNode that is of id destID
-	std::vector<Node>::iterator it = std::find_if (sourceNode->neighbors.begin(), sourceNode->neighbors.end(), isNode(destID));
-	if(it!=sourceNode->neighbors.end()) {//no connection exists
+	//std::vector<Node>::iterator it = std::find_if (sourceNode->neighbors.begin(), sourceNode->neighbors.end(), isNode(destID));
+	//if(it!=sourceNode->neighbors.end()) {//no connection exists
 		//perror("Error - changeLink: no connection exists between source and dest node\n");
-		return false;
+		
+	//	return false;
+	//}
+	for(std::vector<Node>::iterator it = sourceNode->neighbors.begin(); it!=sourceNode->neighbors.end();it++){
+		if(it->id==destID){
+			sourceNode->setLink(destID,newCost);
+			destNode->setLink(destID,newCost);
+			return true;
+		}
 	}
-
-	sourceNode->setLink(destID, newCost);
-	destNode->setLink(sourceID, newCost);
-	return true;
+	return this->addLink(sourceID,destID,newCost);
+	//sourceNode->setLink(destID, newCost);
+	//destNode->setLink(sourceID, newCost);
+	//return true;
 }
 
 void Graph::addLine(int sourceID, int destID, int cost){
@@ -109,6 +131,7 @@ int Graph::routeCost(int sourceID, int destID) {
 		return 0;
 	Node * node = this->findNode(sourceID);
 	RouteTableEntry * entry = node->getNextHop(destID);
+	
 	return entry->cost;
 }
 
@@ -122,7 +145,7 @@ std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> pat
 		std::vector<int> t;
 		return t;
 	}
-	path.push_back(nextHop);
+	path.push_back(sourceID);
 	return routePath(nextHop, destID, path);
 }
 
@@ -134,30 +157,33 @@ void Graph::distVector() {
 	while(changed) {
 		changed = false;
 		for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
-			Node *currNode = &(*it);
+			Node * currNode = &(*it);
 			for(std::vector<RouteTableEntry>::iterator itt = currNode->routeTable.begin(); itt!= currNode->routeTable.end(); ++itt) {
 				RouteTableEntry *currBest = &(*itt);
+				int currDest = currBest->dest;
+				int currNext = currBest->next;
+				int currCost = currBest->cost;
 				if(itt->dest == currNode->id) continue;
-				for(std::vector<Node>::iterator ittt = currNode->neighbors.begin(); it!=currNode->neighbors.end(); ++ittt) {
-					Node *currNeighbor = &(*ittt);
-					RouteTableEntry *proposed = currNeighbor->getNextHop(currBest->dest);
+				for(std::vector<Node>::iterator ittt = currNode->neighbors.begin(); ittt!=currNode->neighbors.end(); ++ittt) {
+					Node *currNeighbor = this->findNode(ittt->id);
+					RouteTableEntry *proposed = currNeighbor->getNextHop(currDest);
 					int newCost = currNode->getLinkCost(currNeighbor->id) + proposed->cost;
 					if(proposed->cost==-999) continue;
-					if(newCost == currBest->cost) {
-						if(currBest->next > currNeighbor->id) {
-							currBest->next = currNeighbor->id;
+					if(newCost == currCost) {
+						if(currNext > currNeighbor->id) {
+							currNext = currNeighbor->id;
 							changed = true;
 							continue;
 						}
 						continue;
 					}
-					if(newCost < currBest->cost || currBest->cost < 0) {
-						currBest->next = currNeighbor->id;
-						currBest->cost = newCost;
+					if(newCost < currCost || currCost < 0) {
+						currNext = currNeighbor->id;
+						currCost = newCost;
 						changed = true;
 					}
 				}
-				currNode->updateRouteTable(currBest->dest, currBest->next, currBest->cost);
+				currNode->updateRouteTable(currDest, currNext, currCost);
 			}
 		}
 	}
