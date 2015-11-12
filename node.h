@@ -31,7 +31,7 @@ class Node {
 		void printNeighbors();
 		RouteTableEntry * findRouteTableEntry(int dest_id);
 		RouteTableEntry * getNextHop(int dest_id);
-
+		void initRoutingTables(int maxNode);
 
 		int id;
 		std::vector<Link> links;

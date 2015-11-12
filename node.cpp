@@ -162,3 +162,12 @@ std::string Node::printRoutingTableInOrder() {
 
 	return ss.str();
 }
+
+
+void Node::initRoutingTables(int maxNode) {
+	int i;
+	for(i=0; i<maxNode; i++) {
+		RouteTableEntry entry = RouteTableEntry(i, i, this->getLinkCost(i));
+		routeTable.push_back(entry);
+	}
+}
