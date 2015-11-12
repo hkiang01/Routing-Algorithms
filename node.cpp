@@ -4,13 +4,17 @@
 Node::Node()
 {
 	id = -1;
+	links.clear();
 	links = std::vector<Link>();
+	routeTable.clear();
 	routeTable = std::vector<RouteTableEntry>();
 }
 
 Node::Node(int id_in) {
 	id = id_in;
+	links.clear();
 	links = std::vector<Link>();
+	routeTable.clear();
 	routeTable = std::vector<RouteTableEntry>();
 }
 
