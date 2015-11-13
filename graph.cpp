@@ -208,6 +208,13 @@ void Graph::distVector() {
 }
 
 void Graph::linkState() {
+	//Initialization
+	for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
+		it->routeTable.clear();
+		it->initRoutingTables(nodes.size());
+		//it->localUpdate();
+	}
+
 	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
 
 		Node *currNode = &(*it);
@@ -218,7 +225,6 @@ void Graph::linkState() {
 		//Initialization
 		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
-		//Initialization already done in linkstate.cpp's call to initRoutingTables
 		bool done = false; //one iter of while
 		while(knowns.size() != nodes.size() && !done) {
 

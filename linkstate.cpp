@@ -89,7 +89,7 @@ int main(int argc, char * argv []) {
 	for(i=0;i<numMessages;i++){
 		ss<<sendMessage(i);
 	}
-	/*
+
 	while(makeChange()){
 		::g->linkState();
 		for(i=1;i<=totalNodes;i++){
@@ -99,7 +99,7 @@ int main(int argc, char * argv []) {
 			ss<<sendMessage(i);
 		}
 	}
-	*/
+
 	//std::cout<<ss.str();
 	std::ofstream out("output.txt");
 	out<<ss.str();
