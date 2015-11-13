@@ -351,9 +351,11 @@ void Graph::linkState() {
 							std::cout << "Condition met, update!" << std::endl;
 							RouteTableEntry *staleRoute = u->findRouteTableEntry(v->id);
 							std::cout << "Stale route: (dest, next, cost)=(" << staleRoute->dest << ", " << staleRoute->next << ", " << staleRoute->cost << ")" << std::endl;
+							std::cout << "entry to update: " << v->id << std::endl;
 
 							//set D(v) <-- D(w) + c(w,v)
 							int newCost = Dw + cwv;
+							std::cout << "new cost: " << newCost << std::endl;
 
 							//set router table entry for v to approprate next
 							//want a path from u to v
@@ -363,8 +365,9 @@ void Graph::linkState() {
 							//path will be of form u -> a -> ... -> z -> w
 							//set node u's router table entry for v to have next = a (after u in path)
 							int newNext;
-							if(u->isNeighbor(v->id)) {
-								newNext = v->id;
+							if(u->isNeighbor(w->id)) {
+								newNext = w->id;
+								std::cout << "new next: " << newNext << std::endl;
 								u->updateRouteTable(v->id, newNext, newCost);
 								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
 								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
@@ -374,7 +377,8 @@ void Graph::linkState() {
 							currPath = this->routePath(u->id, v->id, currPath);
 							if(!currPath.empty()) { //if there is a valid path
 								newNext = currPath[1];
-								u->updateRouteTable(u->id, newNext, newCost);
+								std::cout << "new next: " << newNext << std::endl;
+								u->updateRouteTable(v->id, newNext, newCost);
 								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
 								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
 								continue;
@@ -386,7 +390,7 @@ void Graph::linkState() {
 				std::cout << std::endl << "done updating w's neighbors" << std::endl;;
 			}
 
-			done = true; //one iter of while
+			//done = true; //one iter of while
 		}
 		break;
 	}	
