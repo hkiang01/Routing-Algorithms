@@ -149,6 +149,27 @@ std::vector<int> Graph::routePath(int sourceID, int destID, std::vector<int> pat
 	return routePath(nextHop, destID, path);
 }
 
+std::vector<int> Graph::routeTotalPath(int sourceID, int destID, std::vector<int> path) {
+	if(sourceID < 0 || destID < 0)
+		return path;
+	Node *sourceNode = this->findNode(sourceID);
+	
+	path.push_back(sourceID);
+	if(sourceNode->isNeighbor(destID)) {
+		path.push_back(destID);
+		return path;
+	}
+
+	int hop = sourceNode->findRouteTableEntry(destID)->next;
+	while(hop != destID) {
+		path.push_back(hop);
+		sourceNode = this->findNode(hop);
+		hop = sourceNode->findRouteTableEntry(destID)->next;
+	}
+	path.push_back(destID);
+	return path;
+}
+
 void Graph::distVector() {
 	bool changed = true;
 	for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
@@ -219,8 +240,10 @@ void Graph::linkState() {
 			//find w not in knowns such that D(w) is minimum (example should find node with id 4)
 			for(std::vector<Node>::iterator itt = this->nodes.begin(); itt != this->nodes.end(); ++itt) {
 				Node *candidate = &(*itt);
-				int dist = currNode->getLinkCost(candidate->id);
-				//std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
+				//int dist = currNode->getLinkCost(candidate->id);
+				RouteTableEntry *currEntry = currNode->findRouteTableEntry(candidate->id);
+				int dist = currEntry->cost;
+				std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
 				if(dist < minDist && dist != -999) {
 					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
@@ -269,9 +292,15 @@ void Graph::linkState() {
 					if(!inKnowns) {
 						std::cout << "w's neighbor " << v->id << " not in knowns, checking condition for v: " << v->id << std::endl;
 						//update D(v) = min(D(v), D(w) + c(w,v))
-						int Dv = currNode->getLinkCost(v->id);
-						int Dw = currNode->getLinkCost(w->id);
-						int cwv = w->getLinkCost(v->id);
+						//int Dv = currNode->getLinkCost(v->id);
+						RouteTableEntry *DvEntry = currNode->findRouteTableEntry(v->id);
+						int Dv = DvEntry->cost;
+						//int Dw = currNode->getLinkCost(w->id);
+						RouteTableEntry *DwEntry = currNode->findRouteTableEntry(w->id);
+						int Dw = DwEntry->cost;
+						//int cwv = w->getLinkCost(v->id);
+						RouteTableEntry *cwvEntry = w->findRouteTableEntry(v->id);
+						int cwv = cwvEntry->cost;
 						std::cout << "D(v)=D(" << v->id << "): " << Dv << " D(w)=D(" << w->id << "): " << Dw << " c(w,v)=c(" << w->id << "," << v->id << "): " << cwv << std::endl;
 						if( (Dv == -999) || (Dw != -999 && (Dw + cwv) < Dv) ) {
 							std::cout << "Condition met, update!" << std::endl;
@@ -300,8 +329,13 @@ void Graph::linkState() {
 								continue;
 							}
 							std::vector<int> currPath;
-							currPath = this->routePath(u->id, v->id, currPath);
+							currPath = this->routeTotalPath(u->id, v->id, currPath);
 							if(!currPath.empty()) { //if there is a valid path
+								std::cout << "path from " << u->id << " to " << v->id << ": ";
+								for(std::vector<int>::iterator ittt = currPath.begin(); ittt != currPath.end(); ++ittt) {
+									std::cout << *ittt << " ";
+								}
+								std::cout << std::endl;
 								newNext = currPath[1];
 								std::cout << "new next: " << newNext << std::endl;
 								u->updateRouteTable(v->id, newNext, newCost);
