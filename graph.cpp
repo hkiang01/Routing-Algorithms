@@ -220,8 +220,8 @@ void Graph::linkState() {
 		Node *currNode = &(*it);
 		Node *u = currNode;
 
-		std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
-		std::cout << currNode->printRoutingTableInOrder() << std::endl;
+		//std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
+		//std::cout << currNode->printRoutingTableInOrder() << std::endl;
 		//Initialization
 		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
@@ -229,12 +229,12 @@ void Graph::linkState() {
 		while(knowns.size() != nodes.size() && !done) {
 
 			//print knowns
-			std::cout << "Knowns: ";
+			//std::cout << "Knowns: ";
 			for(std::vector<Node>::iterator itt = knowns.begin(); itt != knowns.end(); ++itt) {
-				Node *currKnown = &(*itt);
-				std::cout << currKnown->id << " ";
+				//Node *currKnown = &(*itt);
+				//std::cout << currKnown->id << " ";
 			}
-			std::cout << std::endl;
+			//std::cout << std::endl;
 
 			Node *w;
 			int minDist = INT_MAX;
@@ -244,7 +244,7 @@ void Graph::linkState() {
 				//int dist = currNode->getLinkCost(candidate->id);
 				RouteTableEntry *currEntry = currNode->findRouteTableEntry(candidate->id);
 				int dist = currEntry->cost;
-				std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
+				//std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
 				if(dist < minDist && dist != -999) {
 					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
@@ -255,7 +255,7 @@ void Graph::linkState() {
 						}
 					}
 					if(!inKnowns) {
-						std::cout << "Node " << currNode->id << " to node " << candidate->id << ": " << dist << " (" << candidate->id << " not in knowns)" << std::endl;
+						//std::cout << "Node " << currNode->id << " to node " << candidate->id << ": " << dist << " (" << candidate->id << " not in knowns)" << std::endl;
 						minDist = dist;
 						w = candidate;
 					}
@@ -270,24 +270,24 @@ void Graph::linkState() {
 
 			//w points to node not in knowns such that D(w) is a minimum
 			if(w && !isBroken) {
-				std::cout << "w: " << w->id << " distance: " << minDist << std::endl;
+				//std::cout << "w: " << w->id << " distance: " << minDist << std::endl;
 				knowns.push_back(*w);
-				std::cout << "pushing w=" << w->id << " to knowns" << std::endl;
+				//std::cout << "pushing w=" << w->id << " to knowns" << std::endl;
 
 				//print knowns
-				std::cout << "Knowns: ";
+				//std::cout << "Knowns: ";
 				for(std::vector<Node>::iterator itt = knowns.begin(); itt != knowns.end(); ++itt) {
-					Node *currKnown = &(*itt);
-					std::cout << currKnown->id << " ";
+					//Node *currKnown = &(*itt);
+					//std::cout << currKnown->id << " ";
 				}
-				std::cout << std::endl;
+				//std::cout << std::endl;
 
 
 				//update D(v) for all v adjacent to w and not in knowns
-				std::cout << "w's neighbors..." << std::endl;
+				//std::cout << "w's neighbors..." << std::endl;
 				for(std::vector<Node>::iterator itt = w->neighbors.begin(); itt != w->neighbors.end(); ++itt) {
 					Node *v = &(*itt);
-					std::cout << v->id << " " << std::endl;
+					//std::cout << v->id << " " << std::endl;
 					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
 						Node *currKnown = &(*ittt);
@@ -297,7 +297,7 @@ void Graph::linkState() {
 						}
 					}
 					if(!inKnowns && w->findRouteTableEntry(v->id)->cost != -999) {
-						std::cout << "w's neighbor " << v->id << " not in knowns, checking condition for v: " << v->id << std::endl;
+						//std::cout << "w's neighbor " << v->id << " not in knowns, checking condition for v: " << v->id << std::endl;
 						//update D(v) = min(D(v), D(w) + c(w,v))
 						//int Dv = currNode->getLinkCost(v->id);
 						RouteTableEntry *DvEntry = currNode->findRouteTableEntry(v->id);
@@ -308,16 +308,16 @@ void Graph::linkState() {
 						//int cwv = w->getLinkCost(v->id);
 						RouteTableEntry *cwvEntry = w->findRouteTableEntry(v->id);
 						int cwv = cwvEntry->cost;
-						std::cout << "D(v)=D(" << v->id << "): " << Dv << " D(w)=D(" << w->id << "): " << Dw << " c(w,v)=c(" << w->id << "," << v->id << "): " << cwv << std::endl;
+						//std::cout << "D(v)=D(" << v->id << "): " << Dv << " D(w)=D(" << w->id << "): " << Dw << " c(w,v)=c(" << w->id << "," << v->id << "): " << cwv << std::endl;
 						if( (Dv == -999) || (Dw != -999 && (Dw + cwv) < Dv) ) {
-							std::cout << "Condition met, update!" << std::endl;
-							RouteTableEntry *staleRoute = u->findRouteTableEntry(v->id);
-							std::cout << "Stale route: (dest, next, cost)=(" << staleRoute->dest << ", " << staleRoute->next << ", " << staleRoute->cost << ")" << std::endl;
-							std::cout << "entry to update: " << v->id << std::endl;
+							//std::cout << "Condition met, update!" << std::endl;
+							//RouteTableEntry *staleRoute = u->findRouteTableEntry(v->id);
+							//std::cout << "Stale route: (dest, next, cost)=(" << staleRoute->dest << ", " << staleRoute->next << ", " << staleRoute->cost << ")" << std::endl;
+							//std::cout << "entry to update: " << v->id << std::endl;
 
 							//set D(v) <-- D(w) + c(w,v)
 							int newCost = Dw + cwv;
-							std::cout << "new cost: " << newCost << std::endl;
+							//std::cout << "new cost: " << newCost << std::endl;
 
 							//set router table entry for v to approprate next
 							//want a path from u to v
@@ -331,29 +331,29 @@ void Graph::linkState() {
 							currPath = this->routeTotalPath(u->id, w->id, currPath);
 							currPath.push_back(v->id);
 							if(!currPath.empty()) { //if there is a valid path
-								std::cout << "path from " << u->id << " to " << v->id << ": ";
+								//std::cout << "path from " << u->id << " to " << v->id << ": ";
 								for(std::vector<int>::iterator ittt = currPath.begin(); ittt != currPath.end(); ++ittt) {
-									std::cout << *ittt << " ";
+									//std::cout << *ittt << " ";
 								}
-								std::cout << std::endl;
+								//std::cout << std::endl;
 								newNext = currPath[1];
-								std::cout << "new next: " << newNext << std::endl;
+								//std::cout << "new next: " << newNext << std::endl;
 								u->updateRouteTable(v->id, newNext, newCost);
-								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
-								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
+								//RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
+								//std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
 								continue;
 							}
 						}
-						std::cout << "node " << v->id << " updated" << std::endl;
+						//std::cout << "node " << v->id << " updated" << std::endl;
 					}
 				}
-				std::cout << std::endl << "done updating w's neighbors" << std::endl;
-				std::cout << currNode->printRoutingTableInOrder() << std::endl;
+				//std::cout << std::endl << "done updating w's neighbors" << std::endl;
+				//std::cout << currNode->printRoutingTableInOrder() << std::endl;
 			}
 			//done = true; //one iter of while
 		}
-		std::cout << "FINAL ROUTING TABLE FOR NODE " << u->id << std::endl;
-		std::cout << u->printRoutingTableInOrder() << std::endl;
+		//std::cout << "FINAL ROUTING TABLE FOR NODE " << u->id << std::endl;
+		//std::cout << u->printRoutingTableInOrder() << std::endl;
 		//break;
 	}	
 }
