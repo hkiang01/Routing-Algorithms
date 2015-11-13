@@ -219,7 +219,6 @@ void Graph::linkState() {
 		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
 		//Initialization already done in linkstate.cpp's call to initRoutingTables
-		//TODO: INITIALIZATION (necessary for subsequent calls)
 		bool done = false; //one iter of while
 		while(knowns.size() != nodes.size() && !done) {
 
@@ -316,16 +315,6 @@ void Graph::linkState() {
 							//path will be of form u -> a -> ... -> z -> w
 							//set node u's router table entry for v to have next = a (after u in path)
 							int newNext;
-							/*
-							if(u->isNeighbor(w->id)) {
-								newNext = w->id;
-								std::cout << "new next: " << newNext << std::endl;
-								u->updateRouteTable(v->id, newNext, newCost);
-								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
-								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
-								continue;
-							}
-							*/
 							std::vector<int> currPath;
 							currPath = this->routeTotalPath(u->id, w->id, currPath);
 							currPath.push_back(v->id);
@@ -349,9 +338,10 @@ void Graph::linkState() {
 				std::cout << std::endl << "done updating w's neighbors" << std::endl;
 				std::cout << currNode->printRoutingTableInOrder() << std::endl;
 			}
-
 			//done = true; //one iter of while
 		}
-		break;
+		std::cout << "FINAL ROUTING TABLE FOR NODE " << u->id << std::endl;
+		std::cout << u->printRoutingTableInOrder() << std::endl;
+		//break;
 	}	
 }
