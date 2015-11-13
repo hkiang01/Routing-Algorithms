@@ -349,7 +349,17 @@ void Graph::linkState() {
 						if( (Dv == -999) || (Dw != -999 && (Dw + cwv) < Dv) ) {
 							std::cout << "Condition met, update!" << std::endl;
 							//set D(v) <-- D(w) + c(w,v)
-							//set router table entry to something???
+							int newCost = Dw + cwv;
+
+							//set router table entry for v to approprate next
+							//want a path from u to v
+							//base case: if u and v are neighbors,
+							//then node u's router table entry for v has next = v
+							//else, call get path from u to w
+							//path will be of form u -> a -> ... -> z -> w
+							//set node u's router table entry for v to have next = a (after u in path)
+
+							//update node u's router table entry for v = (v, a, newCost)
 						}
 
 						//std::cout << "node " << v->id << " updated" << std::endl;
