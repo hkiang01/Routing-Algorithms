@@ -329,22 +329,33 @@ void Graph::linkState() {
 				//update D(v) for all v adjacent to w and not in knowns
 				std::cout << "w's neighbors..." << std::endl;
 				for(std::vector<Node>::iterator itt = w->neighbors.begin(); itt != w->neighbors.end(); ++itt) {
-					Node *currNeighbor = &(*itt);
-					std::cout << currNeighbor->id << " " << std::endl;
+					Node *v = &(*itt);
+					std::cout << v->id << " " << std::endl;
 					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
 						Node *currKnown = &(*ittt);
-						if(currKnown->id == currNeighbor->id) {
+						if(currKnown->id == v->id) {
 							inKnowns = true;
 							break;
 						}
 					}
 					if(!inKnowns) {
-						std::cout << "w's neighbor " << currNeighbor->id << " not in knowns, update" << std::endl;
-						//update D(V) = min(D(v), D(w) + C(w,V))
+						std::cout << "w's neighbor " << v->id << " not in knowns, checking condition for v: " << v->id << std::endl;
+						//update D(v) = min(D(v), D(w) + c(w,v))
+						int Dv = currNode->getLinkCost(v->id);
+						int Dw = currNode->getLinkCost(w->id);
+						int cwv = w->getLinkCost(v->id);
+						std::cout << "D(v)=D(" << v->id << "): " << Dv << " D(w)=D(" << w->id << "): " << Dw << " c(w,v)=c(" << w->id << "," << v->id << "): " << cwv << std::endl;
+						if( (Dv == -999) || (Dw != -999 && (Dw + cwv) < Dv) ) {
+							std::cout << "Condition met, update!" << std::endl;
+							//set D(v) <-- D(w) + c(w,v)
+							//set router table entry to something???
+						}
+
+						//std::cout << "node " << v->id << " updated" << std::endl;
 					}
 				}
-				std::cout << std::endl << "done printing w's neighbors" << std::endl;;
+				std::cout << std::endl << "done updating w's neighbors" << std::endl;;
 			}
 
 			done = true; //one iter of while
