@@ -269,20 +269,46 @@ void Graph::linkState() {
 		
 		Node *currNode = &(*it);
 		
-		//std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
-		//std::cout << currNode->printRoutingTableInOrder() << std::endl;
+		std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
+		std::cout << currNode->printRoutingTableInOrder() << std::endl;
 		//Initialization
 		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
 		//Initialization already done in linkstate.cpp's call to initRoutingTables
 		bool done = false; //one iter of while
 		while(knowns.size() != nodes.size() && !done) {
+			std::cout << "Knowns: ";
+			for(std::vector<Node>::iterator itt = knowns.begin(); itt != knowns.end(); ++itt) {
+				Node *currKnown = &(*itt);
+				std::cout << currKnown->id;
+			}
+			std::cout << std::endl;
+			Node *w;
+			int minDist = INT_MAX;
+			//find w not in knowns such that D(w) is minimum (example should find node with id 4)
+			for(std::vector<Node>::iterator itt = this->nodes.begin(); itt != this->nodes.end(); ++itt) {
+				Node *candidate = &(*itt);
+				int dist = currNode->getLinkCost(candidate->id);
+				//std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
+				if(dist < minDist && dist != -999) {
+					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
+						Node *currKnown = &(*ittt);
+						if(currKnown->id != candidate->id && currNode->id != candidate->id) {
+							//std::cout << "Node " << currNode->id << " to node " << candidate->id << ": " << dist << " (not in knowns)" << std::endl;
+							minDist = dist;
+							w = candidate;
+						}
+					}
+				}	
+			}
 
-			//find w not in knowns such that D(w) is minimum
-			
+			//w points to node not in knowns such that D(w) is a minimum
+			if(w) {
+				std::cout << "w: " << w->id << " distance: " << minDist << std::endl;
+			}
 
 			done = true; //one iter of while
 		}
-
+		break;
 	}	
 }
