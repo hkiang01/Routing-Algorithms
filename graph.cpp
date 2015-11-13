@@ -295,13 +295,18 @@ void Graph::linkState() {
 				int dist = currNode->getLinkCost(candidate->id);
 				//std::cout << "Distance from " << currNode->id << " to " << candidate->id << ": " << dist << std::endl;
 				if(dist < minDist && dist != -999) {
+					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
 						Node *currKnown = &(*ittt);
-						if(currKnown->id != candidate->id && currNode->id != candidate->id) {
-							//std::cout << "Node " << currNode->id << " to node " << candidate->id << ": " << dist << " (not in knowns)" << std::endl;
-							minDist = dist;
-							w = candidate;
+						if(currKnown->id == candidate->id) {
+							inKnowns = true;
+							break;
 						}
+					}
+					if(!inKnowns) {
+						std::cout << "Node " << currNode->id << " to node " << candidate->id << ": " << dist << " (" << candidate->id << " not in knowns)" << std::endl;
+						minDist = dist;
+						w = candidate;
 					}
 				}	
 			}
@@ -326,11 +331,17 @@ void Graph::linkState() {
 				for(std::vector<Node>::iterator itt = w->neighbors.begin(); itt != w->neighbors.end(); ++itt) {
 					Node *currNeighbor = &(*itt);
 					std::cout << currNeighbor->id << " " << std::endl;
+					bool inKnowns = false;
 					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
 						Node *currKnown = &(*ittt);
-						if(currKnown->id != currNeighbor->id && currNode->id != currNeighbor->id) {
-							std::cout << "w's neighbor " << currNeighbor->id << " not in knowns, update" << std::endl;
+						if(currKnown->id == currNeighbor->id) {
+							inKnowns = true;
+							break;
 						}
+					}
+					if(!inKnowns) {
+						std::cout << "w's neighbor " << currNeighbor->id << " not in knowns, update" << std::endl;
+						//update D(V) = min(D(v), D(w) + C(w,V))
 					}
 				}
 				std::cout << std::endl << "done printing w's neighbors" << std::endl;;
