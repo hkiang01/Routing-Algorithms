@@ -266,23 +266,27 @@ void Graph::linkState() {
 
 void Graph::linkState() {
 	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
-		
+
 		Node *currNode = &(*it);
-		
+
 		std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
 		std::cout << currNode->printRoutingTableInOrder() << std::endl;
 		//Initialization
 		std::vector<Node> knowns;
 		knowns.push_back(*currNode);
 		//Initialization already done in linkstate.cpp's call to initRoutingTables
+		//TODO: INITIALIZATION (necessary for subsequent calls)
 		bool done = false; //one iter of while
 		while(knowns.size() != nodes.size() && !done) {
+
+			//print knowns
 			std::cout << "Knowns: ";
 			for(std::vector<Node>::iterator itt = knowns.begin(); itt != knowns.end(); ++itt) {
 				Node *currKnown = &(*itt);
-				std::cout << currKnown->id;
+				std::cout << currKnown->id << " ";
 			}
 			std::cout << std::endl;
+
 			Node *w;
 			int minDist = INT_MAX;
 			//find w not in knowns such that D(w) is minimum (example should find node with id 4)
@@ -305,6 +309,31 @@ void Graph::linkState() {
 			//w points to node not in knowns such that D(w) is a minimum
 			if(w) {
 				std::cout << "w: " << w->id << " distance: " << minDist << std::endl;
+				knowns.push_back(*w);
+
+
+				//print knowns
+				std::cout << "Knowns: ";
+				for(std::vector<Node>::iterator itt = knowns.begin(); itt != knowns.end(); ++itt) {
+					Node *currKnown = &(*itt);
+					std::cout << currKnown->id << " ";
+				}
+				std::cout << std::endl;
+
+
+				//update D(v) for all v adjacent to w and not in knowns
+				std::cout << "w's neighbors..." << std::endl;
+				for(std::vector<Node>::iterator itt = w->neighbors.begin(); itt != w->neighbors.end(); ++itt) {
+					Node *currNeighbor = &(*itt);
+					std::cout << currNeighbor->id << " " << std::endl;
+					for(std::vector<Node>::iterator ittt = knowns.begin(); ittt != knowns.end(); ++ittt) {
+						Node *currKnown = &(*ittt);
+						if(currKnown->id != currNeighbor->id && currNode->id != currNeighbor->id) {
+							std::cout << "w's neighbor " << currNeighbor->id << " not in knowns, update" << std::endl;
+						}
+					}
+				}
+				std::cout << std::endl << "done printing w's neighbors" << std::endl;;
 			}
 
 			done = true; //one iter of while
