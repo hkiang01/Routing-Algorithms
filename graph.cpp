@@ -61,10 +61,10 @@ bool Graph::changeLink(int sourceID, int destID, int newCost) {
 		for(std::vector<Node>::iterator it = sourceNode->neighbors.begin();it!=sourceNode->neighbors.end();it++){
 			if(it->id==destID){
 				sourceNode->removeLink(destID);
-                		sourceNode->removeNeighbor(destID);
-                		destNode->removeLink(sourceID);
-                		destNode->removeNeighbor(sourceID);
-                		return true;
+                sourceNode->removeNeighbor(destID);
+                destNode->removeLink(sourceID);
+                destNode->removeNeighbor(sourceID);
+                return true;
 			}
 		}
 		/**
@@ -261,9 +261,15 @@ void Graph::linkState() {
 					}
 				}	
 			}
+			bool isBroken = false;
+			RouteTableEntry *temp = currNode->findRouteTableEntry(w->id);
+			if(temp->cost == -999) {
+				isBroken = true;
+				knowns.push_back(w->id);
+			}
 
 			//w points to node not in knowns such that D(w) is a minimum
-			if(w) {
+			if(w && !isBroken) {
 				std::cout << "w: " << w->id << " distance: " << minDist << std::endl;
 				knowns.push_back(*w);
 				std::cout << "pushing w=" << w->id << " to knowns" << std::endl;
@@ -290,7 +296,7 @@ void Graph::linkState() {
 							break;
 						}
 					}
-					if(!inKnowns) {
+					if(!inKnowns && w->findRouteTableEntry(v->id)->cost != -999) {
 						std::cout << "w's neighbor " << v->id << " not in knowns, checking condition for v: " << v->id << std::endl;
 						//update D(v) = min(D(v), D(w) + c(w,v))
 						//int Dv = currNode->getLinkCost(v->id);
