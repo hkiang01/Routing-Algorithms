@@ -268,6 +268,7 @@ void Graph::linkState() {
 	for(std::vector<Node>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
 
 		Node *currNode = &(*it);
+		Node *u = currNode;
 
 		std::cout << "Node " << currNode->id << "'s route table size: " << currNode->routeTable.size() << std::endl;
 		std::cout << currNode->printRoutingTableInOrder() << std::endl;
@@ -348,6 +349,9 @@ void Graph::linkState() {
 						std::cout << "D(v)=D(" << v->id << "): " << Dv << " D(w)=D(" << w->id << "): " << Dw << " c(w,v)=c(" << w->id << "," << v->id << "): " << cwv << std::endl;
 						if( (Dv == -999) || (Dw != -999 && (Dw + cwv) < Dv) ) {
 							std::cout << "Condition met, update!" << std::endl;
+							RouteTableEntry *staleRoute = u->findRouteTableEntry(v->id);
+							std::cout << "Stale route: (dest, next, cost)=(" << staleRoute->dest << ", " << staleRoute->next << ", " << staleRoute->cost << ")" << std::endl;
+
 							//set D(v) <-- D(w) + c(w,v)
 							int newCost = Dw + cwv;
 
@@ -358,11 +362,25 @@ void Graph::linkState() {
 							//else, call get path from u to w
 							//path will be of form u -> a -> ... -> z -> w
 							//set node u's router table entry for v to have next = a (after u in path)
-
-							//update node u's router table entry for v = (v, a, newCost)
+							int newNext;
+							if(u->isNeighbor(v->id)) {
+								newNext = v->id;
+								u->updateRouteTable(v->id, newNext, newCost);
+								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
+								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
+								continue;
+							}
+							std::vector<int> currPath;
+							currPath = this->routePath(u->id, v->id, currPath);
+							if(!currPath.empty()) { //if there is a valid path
+								newNext = currPath[1];
+								u->updateRouteTable(u->id, newNext, newCost);
+								RouteTableEntry *newRoute = u->findRouteTableEntry(v->id);
+								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
+								continue;
+							}
 						}
-
-						//std::cout << "node " << v->id << " updated" << std::endl;
+						std::cout << "node " << v->id << " updated" << std::endl;
 					}
 				}
 				std::cout << std::endl << "done updating w's neighbors" << std::endl;;
