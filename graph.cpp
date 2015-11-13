@@ -155,10 +155,6 @@ std::vector<int> Graph::routeTotalPath(int sourceID, int destID, std::vector<int
 	Node *sourceNode = this->findNode(sourceID);
 	
 	path.push_back(sourceID);
-	if(sourceNode->isNeighbor(destID)) {
-		path.push_back(destID);
-		return path;
-	}
 
 	int hop = sourceNode->findRouteTableEntry(destID)->next;
 	while(hop != destID) {
@@ -320,6 +316,7 @@ void Graph::linkState() {
 							//path will be of form u -> a -> ... -> z -> w
 							//set node u's router table entry for v to have next = a (after u in path)
 							int newNext;
+							/*
 							if(u->isNeighbor(w->id)) {
 								newNext = w->id;
 								std::cout << "new next: " << newNext << std::endl;
@@ -328,8 +325,10 @@ void Graph::linkState() {
 								std::cout << "New route: (dest, next, cost)=(" << newRoute->dest << ", " << newRoute->next << ", " << newRoute->cost << ")" << std::endl;
 								continue;
 							}
+							*/
 							std::vector<int> currPath;
 							currPath = this->routeTotalPath(u->id, w->id, currPath);
+							currPath.push_back(v->id);
 							if(!currPath.empty()) { //if there is a valid path
 								std::cout << "path from " << u->id << " to " << v->id << ": ";
 								for(std::vector<int>::iterator ittt = currPath.begin(); ittt != currPath.end(); ++ittt) {
