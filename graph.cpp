@@ -329,7 +329,7 @@ void Graph::linkState() {
 								continue;
 							}
 							std::vector<int> currPath;
-							currPath = this->routeTotalPath(u->id, v->id, currPath);
+							currPath = this->routeTotalPath(u->id, w->id, currPath);
 							if(!currPath.empty()) { //if there is a valid path
 								std::cout << "path from " << u->id << " to " << v->id << ": ";
 								for(std::vector<int>::iterator ittt = currPath.begin(); ittt != currPath.end(); ++ittt) {
