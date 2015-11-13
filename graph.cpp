@@ -355,5 +355,11 @@ void Graph::linkState() {
 		//std::cout << "FINAL ROUTING TABLE FOR NODE " << u->id << std::endl;
 		//std::cout << u->printRoutingTableInOrder() << std::endl;
 		//break;
+		for(std::vector<Node>::iterator it = this->nodes.begin(); it!=this->nodes.end(); ++it) {
+			for(std::vector<RouteTableEntry>::iterator itt = it->routeTable.begin(); itt != it->routeTable.end(); ++itt) {
+				if(itt->cost == -999) itt->next = -999;
+			}
+			//it->localUpdate();
+		}
 	}	
 }
